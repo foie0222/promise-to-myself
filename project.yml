@@ -24,7 +24,6 @@ targets:
       - path: PromiseToMyself/Sources
         type: group
     info:
-      path: PromiseToMyself/Sources/App/Info.plist
       properties:
         CFBundleDisplayName: 自分との約束
         CFBundleIdentifier: com.daiki-inoue.promise-to-myself
