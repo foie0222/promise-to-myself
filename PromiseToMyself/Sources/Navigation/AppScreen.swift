@@ -53,6 +53,7 @@ final class AppViewModel {
         let promise = Promise(content: content, deadline: deadline)
         currentPromise = promise
         savePromise(promise)
+        NotificationService.scheduleDeadlineNotification(for: deadline)
         currentScreen = .display
     }
 
@@ -63,12 +64,14 @@ final class AppViewModel {
     func cancelPromise() {
         currentPromise = nil
         clearPromise()
+        NotificationService.cancelScheduledNotification()
         currentScreen = .input
     }
 
     func proceedToNextPromise() {
         currentPromise = nil
         clearPromise()
+        NotificationService.cancelScheduledNotification()
         currentScreen = .input
     }
 
