@@ -33,7 +33,6 @@ targets:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSUserNotificationUsageDescription: 約束のリマインダーを送るために通知を使用します。
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
     settings:

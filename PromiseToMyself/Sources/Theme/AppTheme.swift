@@ -14,4 +14,5 @@ enum AppTheme {
     static let bodyText = Font.system(size: 16, weight: .regular, design: .default)
     static let captionText = Font.system(size: 14, weight: .regular, design: .default)
     static let buttonText = Font.system(size: 18, weight: .semibold, design: .default)
+    static let countdownText = Font.system(size: 48, weight: .thin, design: .default)
 }

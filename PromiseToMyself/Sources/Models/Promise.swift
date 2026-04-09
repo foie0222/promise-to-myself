@@ -5,7 +5,10 @@ struct Promise: Codable, Equatable {
     let deadline: Date
 
     var isExpired: Bool {
-        Date() >= Calendar.current.startOfDay(for: deadline)
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: deadline)
+        components.hour = 9
+        guard let notificationTime = Calendar.current.date(from: components) else { return false }
+        return Date() >= notificationTime
     }
 
     var daysRemaining: Int {

@@ -19,7 +19,7 @@ struct PromiseDisplayView: View {
 
                 VStack(spacing: 8) {
                     Text("あと \(promise.daysRemaining) 日")
-                        .font(.system(size: 48, weight: .thin, design: .default))
+                        .font(AppTheme.countdownText)
                         .foregroundStyle(AppTheme.accent)
 
                     Text(promise.deadline, style: .date)
