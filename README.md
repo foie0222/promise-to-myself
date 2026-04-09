@@ -35,7 +35,18 @@ An iOS app for keeping one promise to yourself at a time. Local storage, local n
    open PromiseToMyself.xcodeproj
    ```
 
-5. Select your target device or simulator and press **Cmd+R** to build and run.
+5. Xcode上で以下を設定:
+   - **Signing & Capabilities** → Team を自分のApple Developer Accountに設定
+   - **General** → 「DEVELOPMENT_TEAM」をproject.ymlで設定済みなら不要
+
+6. Select your target device or simulator and press **Cmd+R** to build and run.
+
+## 多言語対応の準備
+
+v1.0は日本語のみ。将来の多言語対応時:
+1. Xcode → File → New → File → String Catalog → `Localizable.xcstrings`
+2. SwiftUIの `Text("キー")` が自動的に参照される
+3. 翻訳を追加するだけで対応完了
 
 ## Project Structure
 
