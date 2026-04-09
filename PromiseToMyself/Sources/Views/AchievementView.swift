@@ -6,8 +6,8 @@ struct AchievementView: View {
 
     var body: some View {
         ZStack {
-            // TODO: Replace with CosmicParticleEffect() in Task 9
-            Color.clear.ignoresSafeArea()
+            CosmicParticleEffect()
+                .ignoresSafeArea()
 
             VStack(spacing: 24) {
                 Spacer()
