@@ -10,7 +10,7 @@ struct AcceptanceView: View {
             Spacer()
 
             Text("約束は果たせなかった。\nそれだけのこと。")
-                .font(.system(size: 22, weight: .medium))
+                .font(AppTheme.messageText)
                 .foregroundStyle(AppTheme.textPrimary)
                 .multilineTextAlignment(.center)
                 .opacity(showFirst ? 1 : 0)

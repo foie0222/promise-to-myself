@@ -13,7 +13,7 @@ struct AchievementView: View {
                 Spacer()
 
                 Text("約束を、果たした。")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(AppTheme.heroText)
                     .foregroundStyle(AppTheme.textPrimary)
                     .opacity(animate ? 1 : 0)
                     .scaleEffect(animate ? 1 : 0.8)

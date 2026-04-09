@@ -10,51 +10,38 @@ struct CosmicParticleEffect: View {
         TimelineView(.animation) { timeline in
             let elapsed = timeline.date.timeIntervalSince(startTime)
 
-            Canvas { context, size in
-                let center = CGPoint(x: size.width / 2, y: size.height / 2)
+            Canvas { context, canvasSize in
+                let center = CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
 
                 for particle in particles {
                     let progress = min(elapsed / particle.duration, 1.0)
                     let easedProgress = easeOutCubic(progress)
-
-                    let currentX = center.x + particle.direction.x * particle.distance * easedProgress
-                    let currentY = center.y + particle.direction.y * particle.distance * easedProgress
-
                     let alpha = alphaForProgress(progress)
-                    let size = particle.size * (0.5 + easedProgress * 0.5)
+                    let particleSize = particle.size * (0.5 + easedProgress * 0.5)
 
-                    let color = particle.color.opacity(alpha)
+                    let x = center.x + particle.direction.x * particle.distance * easedProgress
+                    let y = center.y + particle.direction.y * particle.distance * easedProgress
+
                     let rect = CGRect(
-                        x: currentX - size / 2,
-                        y: currentY - size / 2,
-                        width: size,
-                        height: size
+                        x: x - particleSize / 2,
+                        y: y - particleSize / 2,
+                        width: particleSize,
+                        height: particleSize
                     )
-
-                    context.fill(
-                        Circle().path(in: rect),
-                        with: .color(color)
-                    )
+                    context.fill(Circle().path(in: rect), with: .color(particle.color.opacity(alpha)))
 
                     if particle.size > 3 {
                         let glowRect = CGRect(
-                            x: currentX - size,
-                            y: currentY - size,
-                            width: size * 2,
-                            height: size * 2
+                            x: x - particleSize, y: y - particleSize,
+                            width: particleSize * 2, height: particleSize * 2
                         )
-                        context.fill(
-                            Circle().path(in: glowRect),
-                            with: .color(color.opacity(alpha * 0.3))
-                        )
+                        context.fill(Circle().path(in: glowRect), with: .color(particle.color.opacity(alpha * 0.3)))
                     }
                 }
             }
         }
         .onAppear {
-            particles = (0..<particleCount).map { _ in
-                Particle.random()
-            }
+            particles = (0..<particleCount).map { _ in Particle.random() }
             startTime = .now
         }
     }
@@ -64,11 +51,8 @@ struct CosmicParticleEffect: View {
     }
 
     private func alphaForProgress(_ progress: Double) -> Double {
-        if progress < 0.1 {
-            return progress / 0.1
-        } else if progress > 0.7 {
-            return max(0, 1 - (progress - 0.7) / 0.3)
-        }
+        if progress < 0.1 { return progress / 0.1 }
+        if progress > 0.7 { return max(0, 1 - (progress - 0.7) / 0.3) }
         return 1.0
     }
 }
@@ -80,21 +64,21 @@ private struct Particle {
     let size: CGFloat
     let color: Color
 
+    private static let colors: [Color] = [
+        AppTheme.accent,
+        AppTheme.accentBlue,
+        .white,
+        Color(red: 0.6, green: 0.8, blue: 1.0),
+        Color(red: 1.0, green: 0.8, blue: 0.9),
+    ]
+
     static func random() -> Particle {
         let angle = Double.random(in: 0...(2 * .pi))
-        let colors: [Color] = [
-            Color(red: 0.75, green: 0.63, blue: 1.0),
-            Color(red: 0.5, green: 0.5, blue: 1.0),
-            Color.white,
-            Color(red: 0.6, green: 0.8, blue: 1.0),
-            Color(red: 1.0, green: 0.8, blue: 0.9),
-        ]
-
         return Particle(
             direction: CGPoint(x: cos(angle), y: sin(angle)),
-            distance: CGFloat.random(in: 100...500),
-            duration: TimeInterval.random(in: 2.0...4.0),
-            size: CGFloat.random(in: 1...6),
+            distance: .random(in: 100...500),
+            duration: .random(in: 2.0...4.0),
+            size: .random(in: 1...6),
             color: colors.randomElement()!
         )
     }

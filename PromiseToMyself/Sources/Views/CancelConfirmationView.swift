@@ -10,7 +10,7 @@ struct CancelConfirmationView: View {
 
             VStack(spacing: 20) {
                 Text("言葉は命です。")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(AppTheme.emphasisText)
                     .foregroundStyle(AppTheme.textPrimary)
 
                 Text("あなたが自分に誓った言葉を、\n本当に手放しますか？")
@@ -35,7 +35,6 @@ struct CancelConfirmationView: View {
                 }
 
                 Button {
-                    isPresented = false
                     viewModel.cancelPromise()
                 } label: {
                     Text("それでも取り消す")

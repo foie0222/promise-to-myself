@@ -13,7 +13,7 @@ struct PromiseCheckView: View {
                     .foregroundStyle(AppTheme.textSecondary)
 
                 Text("守れましたか？")
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(AppTheme.heroText)
                     .foregroundStyle(AppTheme.textPrimary)
             }
 

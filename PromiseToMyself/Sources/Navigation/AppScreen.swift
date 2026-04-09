@@ -1,5 +1,4 @@
 import SwiftUI
-import Foundation
 
 enum AppScreen: Equatable {
     case onboarding

@@ -8,25 +8,22 @@ struct OnboardingView: View {
             Spacer()
 
             Text("自分との約束")
-                .font(.system(size: 32, weight: .bold))
+                .font(AppTheme.largeTitle)
                 .foregroundStyle(AppTheme.textPrimary)
 
             VStack(spacing: 16) {
                 Text("たった一つの約束を、自分と交わす。")
-                    .font(AppTheme.bodyText)
-                    .foregroundStyle(AppTheme.textSecondary)
-
                 Text("それだけのアプリです。")
-                    .font(AppTheme.bodyText)
-                    .foregroundStyle(AppTheme.textSecondary)
             }
+            .font(AppTheme.bodyText)
+            .foregroundStyle(AppTheme.textSecondary)
             .multilineTextAlignment(.center)
 
             Spacer()
 
             Button {
                 Task {
-                    await NotificationService.requestPermission()
+                    _ = await NotificationService.requestPermission()
                     viewModel.completeOnboarding()
                 }
             } label: {
