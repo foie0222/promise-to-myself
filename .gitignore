@@ -19,5 +19,8 @@ build/
 .build/
 Packages/
 
+# Screenshots (App Store assets)
+screenshots/
+
 # OS
 .DS_Store
