@@ -1,33 +1,54 @@
 # 引き継ぎドキュメント: 自分との約束
 
-> 作成日: 2026-04-09
-> 前回セッションの最終コミット: `7c6626f`
+> 更新日: 2026-04-10
+> 最終コミット: `8182743`
 
 ---
 
 ## 現在の状態
 
-**実装完了、未ビルド。** 全Swiftソースコードはlinux環境で作成済み。MacでXcodeGenを実行してビルド確認が必要。
+**ビルド確認完了、シミュレータ動作確認OK。** App Storeリリースに向けた準備段階。
 
 ### 完了済み
 - 要件定義書（`docs/requirements.md`）
 - 実装計画書（`docs/superpowers/plans/2026-04-09-promise-to-myself-ios.md`）
 - 全Swiftソースコード（16ファイル）
-- XcodeGen設定（`project.yml`）
-- ユニットテスト（Promise + AppViewModel 計16テスト）
-- プライバシーポリシー（`docs/privacy-policy.html`）
+- XcodeGen設定（`project.yml`）— Xcode 15.2 / XcodeGen 2.42.0対応済み
+- ユニットテスト（Promise + AppViewModel 計16テスト、全合格）
+- Assets.xcassets（AppIcon・AccentColorプレースホルダー）
+- プライバシーポリシー（`docs/privacy-policy.html`）— メールアドレス記入済み
+- App Storeメタデータ（`docs/appstore-metadata.md`）— 説明文・キーワード・審査メモ
 - セルフレビュー → 8件の問題を修正済み
+- 日本語入力バグ修正（TextField → TextEditor）
+- Xcode 15.2でのビルド成功確認
+- シミュレータ（iPhone 15 / iOS 17.2）での全画面動作確認
 
 ### 未完了
-- [ ] Macでのビルド確認（最優先）
-- [ ] Macでのテスト実行確認
-- [ ] Apple Developer Program登録
-- [ ] アプリアイコン作成（1024x1024）
+- [ ] アプリアイコン作成（1024x1024）→ Geminiで生成予定
+- [ ] Apple Developer Program登録（年額12,800円）
+- [ ] Xcode Cloud設定（ビルド＆TestFlight配信）
+- [ ] TestFlightでの実機テスト
 - [ ] App Storeスクリーンショット作成
-- [ ] App Store説明文・キーワード
-- [ ] プライバシーポリシーのメールアドレス記入（`docs/privacy-policy.html`）
 - [ ] GitHub Pagesでプライバシーポリシー公開
 - [ ] App Store申請
+
+---
+
+## 環境制約
+
+| 項目 | 現状 | 影響 |
+|---|---|---|
+| Mac | MacBook Pro 2017 (Intel) | macOS 13が最終、Xcode 15.2が上限 |
+| Xcode | 15.2 | iOS 17.2シミュレータまで対応 |
+| iPhone | iOS 26.3.1 | USB経由の実機インストール不可（Xcodeバージョン不足） |
+
+**実機テストはXcode Cloud + TestFlight経由で行う必要がある。**
+
+### XcodeGen
+Homebrew版はmacOS 13非対応。GitHub Releasesから直接ダウンロード済み:
+```
+/tmp/xcodegen/xcodegen/bin/xcodegen generate
+```
 
 ---
 
@@ -35,7 +56,7 @@
 
 ### 技術スタック
 - SwiftUI / Swift 5.9+ / iOS 17.0+
-- データ: UserDefaults（@AppStorage相当、JSONエンコード）
+- データ: UserDefaults（JSONエンコード）
 - 通知: UNUserNotificationCenter（ローカル通知）
 - 外部依存: なし
 
@@ -49,84 +70,59 @@ AppScreen enum (6 states):
                  └── cancel ←── display
 ```
 
-`AppViewModel`（`@Observable`）がState Machineの中核。RootViewがcurrentScreenをswitchして表示するViewを決定。
-
 ### ファイル構成と責務
 
 ```
 PromiseToMyself/Sources/
 ├── App/
 │   └── PromiseToMyselfApp.swift    # @main + UNUserNotificationCenterDelegate
+├── Assets.xcassets/                # AppIcon + AccentColor
 ├── Models/
-│   └── Promise.swift               # Codable構造体（content, deadline, isExpired, daysRemaining）
+│   └── Promise.swift               # Codable構造体
 ├── Navigation/
-│   └── AppScreen.swift             # AppScreen enum + AppViewModel（状態遷移・永続化・通知連携）
+│   └── AppScreen.swift             # AppScreen enum + AppViewModel
 ├── Services/
 │   └── NotificationService.swift   # 通知の許可要求・スケジュール・キャンセル
 ├── Theme/
 │   └── AppTheme.swift              # カラーパレット・フォント定義
 ├── Views/
-│   ├── RootView.swift              # 画面遷移ルーター（.id + .transition(.opacity)でアニメーション）
-│   ├── OnboardingView.swift        # 初回起動：コンセプト説明 + 通知許可
-│   ├── PromiseInputView.swift      # 約束入力：テキスト + 日付ピッカー
-│   ├── PromiseDisplayView.swift    # 約束表示：内容 + 残り日数 + 取り消しボタン
-│   ├── PromiseCheckView.swift      # 達成確認：「守れましたか？」はい/いいえ
-│   ├── AchievementView.swift       # 達成演出：CosmicParticleEffect + テキストフェード
-│   ├── AcceptanceView.swift        # 受容：責めない、事実として受け止める
-│   └── CancelConfirmationView.swift # 取り消し確認シート：「言葉は命です」
+│   ├── RootView.swift              # 画面遷移ルーター
+│   ├── OnboardingView.swift        # 初回起動
+│   ├── PromiseInputView.swift      # 約束入力（TextEditor使用）
+│   ├── PromiseDisplayView.swift    # 約束表示
+│   ├── PromiseCheckView.swift      # 達成確認
+│   ├── AchievementView.swift       # 達成演出
+│   ├── AcceptanceView.swift        # 受容
+│   └── CancelConfirmationView.swift # 取り消し確認シート
 └── Effects/
-    └── CosmicParticleEffect.swift  # Canvas + TimelineView パーティクルシステム
+    └── CosmicParticleEffect.swift  # パーティクルシステム
 
 Tests/
-├── PromiseTests.swift              # Promiseモデルのテスト（6件）
-└── AppViewModelTests.swift         # 画面遷移のテスト（10件）
+├── PromiseTests.swift              # Promiseモデルのテスト（6件）XCTest
+└── AppViewModelTests.swift         # 画面遷移のテスト（10件）XCTest
 ```
-
-### 設計判断と理由
-
-| 判断 | 理由 |
-|---|---|
-| SwiftData不採用 → UserDefaults | 約束は常に1つ。保存するのはJSON 1つとフラグ1つだけ |
-| NavigationStack不採用 → enum switch | アプリ状態がそのまま画面に対応。スタック管理不要 |
-| 外部ライブラリなし | この規模では不要。依存ゼロで審査もシンプル |
-| Canvas + TimelineView | SpriteKit等を使わずSwiftUI標準だけで達成演出を実現 |
-| XcodeGenでプロジェクト管理 | .xcodeprojをgit管理しない。コンフリクト回避 |
 
 ---
 
-## 重要な実装詳細
+## 次のステップ
 
-### isExpiredの閾値
-`Promise.isExpired`は期限日の**午前9時**を基準に判定する（通知時刻と一致）。当初はstartOfDay（午前0時）だったがセルフレビューで修正済み。
+### 1. アプリアイコン
+Geminiで生成 → `PromiseToMyself/Sources/Assets.xcassets/AppIcon.appiconset/AppIcon.png` に配置 → Contents.jsonを更新
 
-### 取り消しUXの設計意図
-取り消しは機能的に可能だが、UXで「言葉の重み」を伝える。「約束を続ける」を目立つアクセントカラー、「それでも取り消す」を極薄グレーの小テキストにして、継続をデフォルト行動に。
+### 2. Apple Developer Program登録
+1. developer.apple.com で登録（12,800円/年）
+2. 登録完了後、Xcode CloudまたはGitHub Actionsでビルドパイプライン構築
 
-### 通知はローカル通知のみ
-APNs（リモート通知）は一切不要。サーバーなし。`UNCalendarNotificationTrigger`で期限日9:00 JSTにスケジュール。
+### 3. Xcode Cloud でTestFlight配信
+Developer Program登録後:
+1. App Store Connect でアプリ登録
+2. Xcode Cloud ワークフロー設定（main pushでビルド→TestFlight配信）
+3. TestFlightで実機テスト（iOS 26.3.1のiPhoneで確認）
 
----
-
-## 次のセッションですべきこと
-
-### 最優先: Macでビルド確認
-```bash
-cd ~/dev/promise-to-myself
-brew install xcodegen
-xcodegen generate
-open PromiseToMyself.xcodeproj
-# Xcode: Signing → Team設定 → Cmd+R → Cmd+U
-```
-
-ビルドエラーが出たらClaude Codeに共有。linux環境で書いたコードなのでXcode固有の問題がある可能性あり。
-
-### ビルド成功後
-1. 全画面の動作確認（シミュレータ）
-2. 通知テスト（NotificationServiceのtriggerを一時的に5秒後に変更して確認）
-3. App Store素材作成（アイコン、スクショ、説明文）
-4. GitHub Pages設定 → プライバシーポリシー公開
-5. Apple Developer Program登録完了を待つ
-6. App Store Connect → 申請
+### 4. App Store申請
+- スクリーンショット作成（シミュレータから取得可能）
+- GitHub Pagesでプライバシーポリシー公開
+- App Store Connect で申請
 
 ---
 
@@ -134,3 +130,4 @@ open PromiseToMyself.xcodeproj
 - 要件定義書: `docs/requirements.md`
 - 実装計画書: `docs/superpowers/plans/2026-04-09-promise-to-myself-ios.md`
 - プライバシーポリシー: `docs/privacy-policy.html`
+- App Storeメタデータ: `docs/appstore-metadata.md`
