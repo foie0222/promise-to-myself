@@ -1,8 +1,7 @@
-import Testing
-import Foundation
+import XCTest
 @testable import PromiseToMyself
 
-struct AppViewModelTests {
+final class AppViewModelTests: XCTestCase {
     private func makeVM(
         isFirstLaunch: Bool = false,
         savedPromise: Promise? = nil
@@ -15,70 +14,70 @@ struct AppViewModelTests {
         )
     }
 
-    @Test func initialState_firstLaunch_showsOnboarding() {
+    func testInitialState_firstLaunch_showsOnboarding() {
         let vm = makeVM(isFirstLaunch: true)
-        #expect(vm.currentScreen == .onboarding)
+        XCTAssertEqual(vm.currentScreen, .onboarding)
     }
 
-    @Test func initialState_noPromise_showsInput() {
+    func testInitialState_noPromise_showsInput() {
         let vm = makeVM()
-        #expect(vm.currentScreen == .input)
+        XCTAssertEqual(vm.currentScreen, .input)
     }
 
-    @Test func initialState_activePromise_showsDisplay() {
+    func testInitialState_activePromise_showsDisplay() {
         let future = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
         let vm = makeVM(savedPromise: Promise(content: "テスト", deadline: future))
-        #expect(vm.currentScreen == .display)
+        XCTAssertEqual(vm.currentScreen, .display)
     }
 
-    @Test func initialState_expiredPromise_showsCheck() {
+    func testInitialState_expiredPromise_showsCheck() {
         let past = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let vm = makeVM(savedPromise: Promise(content: "テスト", deadline: past))
-        #expect(vm.currentScreen == .check)
+        XCTAssertEqual(vm.currentScreen, .check)
     }
 
-    @Test func completeOnboarding_transitionsToInput() {
+    func testCompleteOnboarding_transitionsToInput() {
         let vm = makeVM(isFirstLaunch: true)
         vm.completeOnboarding()
-        #expect(vm.currentScreen == .input)
+        XCTAssertEqual(vm.currentScreen, .input)
     }
 
-    @Test func makePromise_transitionsToDisplay() {
+    func testMakePromise_transitionsToDisplay() {
         let vm = makeVM()
         let future = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
         vm.makePromise(content: "毎朝7時に起きる", deadline: future)
-        #expect(vm.currentScreen == .display)
-        #expect(vm.currentPromise?.content == "毎朝7時に起きる")
+        XCTAssertEqual(vm.currentScreen, .display)
+        XCTAssertEqual(vm.currentPromise?.content, "毎朝7時に起きる")
     }
 
-    @Test func answerYes_transitionsToAchievement() {
+    func testAnswerYes_transitionsToAchievement() {
         let past = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let vm = makeVM(savedPromise: Promise(content: "テスト", deadline: past))
         vm.answerKept(yes: true)
-        #expect(vm.currentScreen == .achievement)
+        XCTAssertEqual(vm.currentScreen, .achievement)
     }
 
-    @Test func answerNo_transitionsToAcceptance() {
+    func testAnswerNo_transitionsToAcceptance() {
         let past = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let vm = makeVM(savedPromise: Promise(content: "テスト", deadline: past))
         vm.answerKept(yes: false)
-        #expect(vm.currentScreen == .acceptance)
+        XCTAssertEqual(vm.currentScreen, .acceptance)
     }
 
-    @Test func cancelPromise_transitionsToInput() {
+    func testCancelPromise_transitionsToInput() {
         let future = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
         let vm = makeVM(savedPromise: Promise(content: "テスト", deadline: future))
         vm.cancelPromise()
-        #expect(vm.currentScreen == .input)
-        #expect(vm.currentPromise == nil)
+        XCTAssertEqual(vm.currentScreen, .input)
+        XCTAssertNil(vm.currentPromise)
     }
 
-    @Test func proceedFromAchievement_transitionsToInput() {
+    func testProceedFromAchievement_transitionsToInput() {
         let past = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let vm = makeVM(savedPromise: Promise(content: "テスト", deadline: past))
         vm.answerKept(yes: true)
         vm.proceedToNextPromise()
-        #expect(vm.currentScreen == .input)
-        #expect(vm.currentPromise == nil)
+        XCTAssertEqual(vm.currentScreen, .input)
+        XCTAssertNil(vm.currentPromise)
     }
 }

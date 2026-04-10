@@ -1,52 +1,51 @@
-import Testing
-import Foundation
+import XCTest
 @testable import PromiseToMyself
 
-struct PromiseTests {
-    @Test func createPromise() {
+final class PromiseTests: XCTestCase {
+    func testCreatePromise() {
         let deadline = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
         let promise = Promise(content: "毎朝7時に起きる", deadline: deadline)
 
-        #expect(promise.content == "毎朝7時に起きる")
-        #expect(promise.deadline == deadline)
+        XCTAssertEqual(promise.content, "毎朝7時に起きる")
+        XCTAssertEqual(promise.deadline, deadline)
     }
 
-    @Test func isExpired_beforeDeadline_returnsFalse() {
+    func testIsExpired_beforeDeadline_returnsFalse() {
         let future = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
         let promise = Promise(content: "テスト", deadline: future)
 
-        #expect(!promise.isExpired)
+        XCTAssertFalse(promise.isExpired)
     }
 
-    @Test func isExpired_afterDeadline_returnsTrue() {
+    func testIsExpired_afterDeadline_returnsTrue() {
         let past = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let promise = Promise(content: "テスト", deadline: past)
 
-        #expect(promise.isExpired)
+        XCTAssertTrue(promise.isExpired)
     }
 
-    @Test func daysRemaining_sevenDaysFromNow() {
+    func testDaysRemaining_sevenDaysFromNow() {
         let future = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
         let promise = Promise(content: "テスト", deadline: future)
 
-        #expect(promise.daysRemaining >= 6 && promise.daysRemaining <= 7)
+        XCTAssertTrue(promise.daysRemaining >= 6 && promise.daysRemaining <= 7)
     }
 
-    @Test func daysRemaining_pastDeadline_returnsZero() {
+    func testDaysRemaining_pastDeadline_returnsZero() {
         let past = Calendar.current.date(byAdding: .day, value: -3, to: Date())!
         let promise = Promise(content: "テスト", deadline: past)
 
-        #expect(promise.daysRemaining == 0)
+        XCTAssertEqual(promise.daysRemaining, 0)
     }
 
-    @Test func jsonRoundTrip() throws {
+    func testJsonRoundTrip() throws {
         let deadline = Date(timeIntervalSince1970: 1750000000)
         let original = Promise(content: "ギャンブルをやめる", deadline: deadline)
 
         let data = try JSONEncoder().encode(original)
         let decoded = try JSONDecoder().decode(Promise.self, from: data)
 
-        #expect(decoded.content == original.content)
-        #expect(decoded.deadline == original.deadline)
+        XCTAssertEqual(decoded.content, original.content)
+        XCTAssertEqual(decoded.deadline, original.deadline)
     }
 }

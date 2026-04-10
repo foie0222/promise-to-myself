@@ -16,18 +16,24 @@ struct PromiseInputView: View {
         VStack(spacing: 32) {
             Spacer()
 
-            Text("自分に、約束する")
+            Text("自分に約束する")
                 .font(AppTheme.titleText)
                 .foregroundStyle(AppTheme.textSecondary)
 
-            TextField("", text: $content, prompt: Text("約束の内容")
-                .foregroundStyle(AppTheme.textSecondary.opacity(0.5)),
-                axis: .vertical
-            )
-            .font(AppTheme.promiseText)
-            .foregroundStyle(AppTheme.textPrimary)
-            .multilineTextAlignment(.center)
-            .lineLimit(1...5)
+            ZStack {
+                if content.isEmpty {
+                    Text("約束の内容")
+                        .font(AppTheme.promiseText)
+                        .foregroundStyle(AppTheme.textSecondary.opacity(0.5))
+                }
+                TextEditor(text: $content)
+                    .font(AppTheme.promiseText)
+                    .foregroundStyle(AppTheme.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .scrollContentBackground(.hidden)
+                    .frame(minHeight: 40, maxHeight: 120)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             .padding(.horizontal, 32)
 
             VStack(spacing: 8) {
