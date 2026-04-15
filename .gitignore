@@ -22,5 +22,8 @@ Packages/
 # Screenshots (App Store assets)
 screenshots/
 
+# Playwright MCP
+.playwright-mcp/
+
 # OS
 .DS_Store
