@@ -25,6 +25,7 @@ struct PromiseDisplayView: View {
                     Text(promise.deadline, style: .date)
                         .font(AppTheme.captionText)
                         .foregroundStyle(AppTheme.textSecondary)
+                        .environment(\.locale, Locale(identifier: "ja_JP"))
                 }
             }
 

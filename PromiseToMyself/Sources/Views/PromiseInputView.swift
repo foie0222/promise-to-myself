@@ -9,7 +9,6 @@ struct PromiseInputView: View {
 
     private var isValid: Bool {
         !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            && deadline > Date()
     }
 
     var body: some View {
@@ -37,20 +36,21 @@ struct PromiseInputView: View {
             .padding(.horizontal, 32)
 
             VStack(spacing: 8) {
-                Text("いつまでに")
+                Text("いつまで")
                     .font(AppTheme.captionText)
                     .foregroundStyle(AppTheme.textSecondary)
 
                 DatePicker(
                     "",
                     selection: $deadline,
-                    in: Calendar.current.date(byAdding: .day, value: 1, to: Date())!...,
+                    in: Calendar.current.startOfDay(for: Date())...,
                     displayedComponents: .date
                 )
                 .datePickerStyle(.compact)
                 .labelsHidden()
                 .colorScheme(.dark)
                 .tint(AppTheme.accent)
+                .environment(\.locale, Locale(identifier: "ja_JP"))
             }
 
             Spacer()

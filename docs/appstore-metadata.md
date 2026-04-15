@@ -57,12 +57,13 @@
 
 ## 審査メモ（Review Notes）
 
-This app intentionally has a minimal feature set. It allows users to set one personal promise with a deadline, receive a local notification when the deadline arrives, and then reflect on whether they kept their promise.
+This app intentionally has a minimal feature set. It allows users to set one personal promise with a deadline, receive a local notification when the deadline arrives, and celebrate their achievement with a shareable image.
 
 Key points:
 - Local notifications only (UNCalendarNotificationTrigger) — no remote/push notifications
 - All data stored on-device via UserDefaults — no server communication
 - No account system, no analytics, no third-party SDKs
+- Share feature uses iOS native ShareLink (no external services)
 - The app's value lies in its intentional simplicity and unique UX around commitment and self-reflection
 
 ---

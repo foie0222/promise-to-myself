@@ -16,7 +16,7 @@ enum NotificationService {
     static func scheduleDeadlineNotification(for deadline: Date) {
         let content = UNMutableNotificationContent()
         content.title = "自分との約束"
-        content.body = "約束の期限です。守れましたか？"
+        content.body = "約束の期間が終わりました。守れましたか？"
         content.sound = .default
 
         var dateComponents = Calendar.current.dateComponents(

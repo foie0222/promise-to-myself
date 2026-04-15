@@ -7,9 +7,10 @@ struct OnboardingView: View {
         VStack(spacing: 40) {
             Spacer()
 
-            Text("自分との約束")
+            Text("他の誰でもない\n自分との約束")
                 .font(AppTheme.largeTitle)
                 .foregroundStyle(AppTheme.textPrimary)
+                .multilineTextAlignment(.center)
 
             VStack(spacing: 16) {
                 Text("たった一つの約束を、自分と交わす。")

@@ -37,7 +37,7 @@ final class AppViewModel {
         if isFirstLaunch {
             self.currentScreen = .onboarding
         } else if let promise {
-            self.currentScreen = promise.isExpired ? .check : .display
+            self.currentScreen = promise.isExpired ? .achievement : .display
         } else {
             self.currentScreen = .input
         }
